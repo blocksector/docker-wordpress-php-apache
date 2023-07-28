@@ -2,33 +2,25 @@ version: '3.1'
 
 services:
   web:
-    container_name: Wordpress
-    image: wordpress:6.2.2-php7.4-apache  
+    container_name: ${PROJECT_NAME}
+    image: wordpress:${WP_BUILD_VERSION}-php${PHP_IMAGE}
+    build:
+      args:
+        WP_BUILD_VERSION: ${WP_BUILD_VERSION}
+        WP_BUILD_SHA1: ${WP_BUILD_SHA1}
+        PHP_IMAGE: php:${PHP_IMAGE}
+      context: ./docker-wp-files
     restart: unless-stopped
     ports:
-      - 8080:80
+      - ${EXPOSE_PORTS}
     environment:
-      WORDPRESS_DB_HOST: db
-      WORDPRESS_DB_USER: admin
-      WORDPRESS_DB_PASSWORD: 1234qwer
-      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DB_HOST: host.docker.internal
+      WORDPRESS_DB_USER: ${WORDPRESS_DB_USER}
+      WORDPRESS_DB_PASSWORD: ${WORDPRESS_DB_PASSWORD}
+      WORDPRESS_DB_NAME: ${WORDPRESS_DB_NAME}
     working_dir: /var/www/html
     volumes:
       - ./site:/var/www/html
-      - ./uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
-    depends_on:
-      - db
-  db:
-    platform: linux/amd64
-    image: mysql:5.7.42
-    restart: unless-stopped
-    environment:
-      MYSQL_DATABASE: wordpress
-      MYSQL_USER: admin
-      MYSQL_PASSWORD: 1234qwer
-      MYSQL_RANDOM_ROOT_PASSWORD: 1234qwer
-    volumes:
-      - db:/var/lib/mysql
-
-volumes:
-  db:
+      - ./php-files/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
+    extra_hosts:
+      - host.docker.internal:host-gateway

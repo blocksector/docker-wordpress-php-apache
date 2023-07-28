@@ -4,7 +4,12 @@
 # PLEASE DO NOT EDIT IT DIRECTLY.
 #
 
-FROM php:7.4-apache
+ARG PHP_IMAGE
+
+FROM ${PHP_IMAGE}
+
+ARG WP_BUILD_VERSION
+ARG WP_BUILD_SHA1
 
 # persistent dependencies
 RUN set -eux; \
@@ -122,8 +127,8 @@ RUN set -eux; \
 	find /etc/apache2 -type f -name '*.conf' -exec sed -ri 's/([[:space:]]*LogFormat[[:space:]]+"[^"]*)%h([^"]*")/\1%a\2/g' '{}' +
 
 RUN set -eux; \
-	version='6.2.2'; \
-	sha1='a355d1b975405a391c4a78f988d656b375683fb2'; \
+	version="${WP_BUILD_VERSION}"; \
+	sha1="${WP_BUILD_SHA1}"; \
 	\
 	curl -o wordpress.tar.gz -fL "https://wordpress.org/wordpress-$version.tar.gz"; \
 	echo "$sha1 *wordpress.tar.gz" | sha1sum -c -; \
