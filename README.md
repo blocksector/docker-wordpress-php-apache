@@ -12,6 +12,10 @@ A port of Docker Wordpress image that allows the user to dynamically change PHP,
 3. Create database // TODO: a guide for spawning MySQL instance
 4. run $ docker-compose up -d
 
+*note:* check php with apache version from [Docker Hub](https://hub.docker.com/_/php)
+
 ## Change Logs
 
+10-18-2023: Added reference to docker hub and default image number to .env.sample
 07-28-2023: Initial commit. Base Docker compose file consuming .env variables
+
